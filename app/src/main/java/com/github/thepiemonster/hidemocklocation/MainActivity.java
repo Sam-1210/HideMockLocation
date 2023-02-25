@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         // Gather system location metadata
         boolean isMockSettingsOlderThanAndroid6 = isMockSettingsOlderThanSDK18(this);
         boolean isMockSettingsNewerThanAndroid6 = isMockSettingsNewerThanSDK18(location);
+        boolean isMockSettingsNewerThanAndroid12 = isMockSettingsNewerThanSDK31(location);
 
         // Create Material Dialog
         MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this, R.style.AlertDialogTheme);
@@ -178,24 +179,29 @@ public class MainActivity extends AppCompatActivity {
         String infoText = "Enable/Disable a mock location provider application and then view the below info.";
         String isMockSettingsOlderThanAndroid6Text = "\n\nCurrent SDK Older Than Android 6: ALLOW_MOCK_LOCATION Setting: ";
         String isMockSettingsNewerThanAndroid6Text = "\n\nCurrent SDK Newer Than Android 6: location.isFromMockProvider(): ";
+        String isMockSettingsNewerThanAndroid12Text = "\n\nCurrent SDK Newer Than Android 12: location.isMock(): ";
 
         int infoTextCount = infoText.length();
         int isMockSettingsOlderThanAndroid6TextCount = isMockSettingsOlderThanAndroid6Text.length();
         int isMockSettingsOlderThanAndroid6BoolCount = String.valueOf(isMockSettingsOlderThanAndroid6).length();
         int isMockSettingsOlderThanAndroid6TextCountTotal = isMockSettingsOlderThanAndroid6TextCount + isMockSettingsOlderThanAndroid6BoolCount;
         int isMockSettingsNewerThanAndroid6TextCount = isMockSettingsNewerThanAndroid6Text.length();
+        int isMockSettingsNewerThanAndroid12TextCount = isMockSettingsNewerThanAndroid12Text.length();
         int isMockSettingsNewerThanAndroid6BoolCount = String.valueOf(isMockSettingsNewerThanAndroid6).length();
+        int isMockSettingsNewerThanAndroid12BoolCount = String.valueOf(isMockSettingsNewerThanAndroid12).length();
         int isMockSettingsNewerThanAndroid6TextCountTotal = isMockSettingsNewerThanAndroid6TextCount + isMockSettingsNewerThanAndroid6BoolCount;
 
         int isMockSettingsNewerThanAndroid6Color;
         if(isMockSettingsNewerThanAndroid6) {isMockSettingsNewerThanAndroid6Color = Color.RED;} else {isMockSettingsNewerThanAndroid6Color = Color.GREEN;}
 
         SpannableString string = new SpannableString(
-            infoText +
-            isMockSettingsOlderThanAndroid6Text + isMockSettingsOlderThanAndroid6 +
-            isMockSettingsNewerThanAndroid6Text + isMockSettingsNewerThanAndroid6);
+                infoText +
+                        isMockSettingsOlderThanAndroid6Text + isMockSettingsOlderThanAndroid6 +
+                        isMockSettingsNewerThanAndroid6Text + isMockSettingsNewerThanAndroid6 +
+                        isMockSettingsNewerThanAndroid12Text + isMockSettingsNewerThanAndroid12);
         string.setSpan(new ForegroundColorSpan(Color.GRAY), infoTextCount + isMockSettingsOlderThanAndroid6TextCount, infoTextCount + isMockSettingsOlderThanAndroid6TextCount + isMockSettingsOlderThanAndroid6BoolCount, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
         string.setSpan(new ForegroundColorSpan(isMockSettingsNewerThanAndroid6Color), infoTextCount + isMockSettingsOlderThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid6TextCount, infoTextCount + isMockSettingsOlderThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid6TextCount + isMockSettingsNewerThanAndroid6BoolCount, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        string.setSpan(new ForegroundColorSpan(isMockSettingsNewerThanAndroid6Color), infoTextCount + isMockSettingsOlderThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid12TextCount, infoTextCount + isMockSettingsOlderThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid6TextCountTotal + isMockSettingsNewerThanAndroid12TextCount + isMockSettingsNewerThanAndroid12BoolCount, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         dialogBuilder.setMessage(string);
         dialogBuilder.setNegativeButton(getString(R.string.alert_dialog_close), new DialogInterface.OnClickListener() {
@@ -230,6 +236,16 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isMockSettingsNewerThanSDK18(Location location) {
         boolean isFromMockProvider = location.isFromMockProvider();
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && location != null && isFromMockProvider;
+    }
+
+    public static boolean isMockSettingsNewerThanSDK31(Location location) {
+        if (Build.VERSION.SDK_INT >= 31)
+        {
+            boolean isMock = location.isMock();
+            return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) && location != null && isMock;
+        }
+
+        return false;
     }
 
     /**
@@ -350,14 +366,14 @@ public class MainActivity extends AppCompatActivity {
      */
     public void throwErrorDialog(String e) {
         new AlertDialog.Builder(this)
-            .setTitle("Exception Thrown")
-            .setMessage(e)
-            .setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    startActivity(new Intent(MainActivity.this,MainActivity.class));
-                }
-            }).create().show();
+                .setTitle("Exception Thrown")
+                .setMessage(e)
+                .setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(MainActivity.this,MainActivity.class));
+                    }
+                }).create().show();
     }
 
     /**

@@ -16,6 +16,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <activity
+            android:exported="true"
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
@@ -25,6 +26,7 @@
         </activity>
 
         <activity
+            android:exported="true"
             android:name=".MainActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
@@ -34,11 +36,12 @@
         </activity>
 
         <activity
+            android:exported="false"
             android:name=".AboutActivity"
             android:theme="@style/AppTheme" >
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
 
         <meta-data
